@@ -10,29 +10,29 @@ jobs:
     steps:
       - checkout
 
-      - restore_cache:
-          keys:
-          - v2-dependencies-{{ checksum "requirements.txt" }}
-          # fallback to using the latest cache if no exact match is found
-          - v2-dependencies-
+      # - restore_cache:
+      #     keys:
+      #     - v2-dependencies-{{ checksum "requirements.txt" }}
+      #     # fallback to using the latest cache if no exact match is found
+      #     - v2-dependencies-
 
-      - run:
-          name: install dependencies
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r requirements.txt
+      # - run:
+      #     name: install dependencies
+      #     command: |
+      #       python3 -m venv venv
+      #       . venv/bin/activate
+      #       pip install -r requirements.txt
 
-      - save_cache:
-          paths:
-            - ./venv
-          key: v2-dependencies-{{ checksum "requirements.txt" }}
+      # - save_cache:
+      #     paths:
+      #       - ./venv
+      #     key: v2-dependencies-{{ checksum "requirements.txt" }}
         
-      - run:
-          name: run tests
-          command: |
-            . venv/bin/activate
-            python -m pytest -v
+      # - run:
+      #     name: run tests
+      #     command: |
+      #       . venv/bin/activate
+      #       python -m pytest -v
 
   deploy:
     docker:
@@ -100,7 +100,3 @@ workflows:
   build-test-and-deploy:
     jobs:
       - build-and-test
-      - deploy:
-          requires:
-            - build-and-test
-
