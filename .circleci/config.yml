@@ -10,9 +10,8 @@ jobs:
     steps:
       - checkout
 
-      # - restore_cache:
-      #     keys:
-      #     - v2-dependencies-{{ checksum "requirements.txt" }}
+
+# ksum "requirements.txt" }}
       #     # fallback to using the latest cache if no exact match is found
       #     - v2-dependencies-
 
@@ -49,56 +48,61 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v2-dependencies-
 
-      - run:
-          name: install dependencies
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r requirements.txt
+      # - run:
+      #     name: install dependencies
+      #     command: |
+      #       python3 -m venv venv
+      #       . venv/bin/activate
+      #       pip install -r requirements.txt
 
-      - save_cache:
-          paths:
-            - ./venv
-          key: v2-dependencies-{{ checksum "requirements.txt" }}
+      # - save_cache:
+      #     paths:
+      #       - ./venv
+      #     key: v2-dependencies-{{ checksum "requirements.txt" }}
 
-      - run:
-          name: populate environment variables from circleci envvar into zappa_settings
-          command: |
-            . venv/bin/activate
-            python envvar_helper.py dev ENV_VAR_1 $ENV_VAR_1 zappa_settings.json
+      # - run:
+      #     name: populate environment variables from circleci envvar into zappa_settings
+      #     command: |
+      #       . venv/bin/activate
+      #       python envvar_helper.py dev ENV_VAR_1 $ENV_VAR_1 zappa_settings.json
 
-      - run:
-          name: deploy to aws using zappa (update existing)
-          command: |
-            . venv/bin/activate
+      # - run:
+      #     name: deploy to aws using zappa (update existing)
+      #     command: |
+      #       . venv/bin/activate
             
-            ### without explicit unschedule, update command does not remove
-            ### any deployed schedule which was removed from zappa_settings
+      #       ### without explicit unschedule, update command does not remove
+      #       ### any deployed schedule which was removed from zappa_settings
             
-            zappa unschedule dev
+      #       zappa unschedule dev
             
-            ### update command also deploys any undeployed schedule
-            ### and updates existing schedule (eg frequency)
+      #       ### update command also deploys any undeployed schedule
+      #       ### and updates existing schedule (eg frequency)
             
-            zappa update dev
+      #       zappa update dev
 
-      - run:
-          name: deploy to aws using zappa (deploy for first time)
-          command: |
-            . venv/bin/activate
+      # - run:
+      #     name: deploy to aws using zappa (deploy for first time)
+      #     command: |
+      #       . venv/bin/activate
 
-            ### deploy command deploys functions, api gateway and schedules
-            ### calling this on already deployed project will fail the job
-            ### this is for fallback for first time deploy
-            ### as workaround, rerun the workflow if this fails
+      #       ### deploy command deploys functions, api gateway and schedules
+      #       ### calling this on already deployed project will fail the job
+      #       ### this is for fallback for first time deploy
+      #       ### as workaround, rerun the workflow if this fails
 
-            zappa deploy dev
-          when: on_fail
+      #       zappa deploy dev
+      #     when: on_fail
 
 workflows:
   version: 2
   build-test-and-deploy:
     jobs:
+      - deploy:
+            filters:
+              branches:
+                only:
+                  - pr/^pull\/.*$/
       - build-and-test:
             filters:
               branches:
