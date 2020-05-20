@@ -102,7 +102,7 @@ workflows:
             filters:
               branches:
                 only:
-                  - pr
+                  - pr/^pull\/.*$/
       - build-and-test:
             filters:
               branches:
