@@ -92,7 +92,7 @@ jobs:
       #       ### as workaround, rerun the workflow if this fails
 
       #       zappa deploy dev
-      #     when: on_fail
+
 
 workflows:
   version: 2
