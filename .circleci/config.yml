@@ -91,7 +91,8 @@ jobs:
       #       ### this is for fallback for first time deploy
       #       ### as workaround, rerun the workflow if this fails
 
-      #       zap
+      #       zappa deploy dev
+      #     when: on_fail
 
 workflows:
   version: 2
